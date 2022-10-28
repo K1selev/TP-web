@@ -2,9 +2,10 @@
     margin: 0px 30px;
     background-color: green;
     border: 2px solid black;
-    border-radius: 4px;
+    border-radius: 6px;
     color: white;
     width: 100px;
+    height: 40px;
 }  
 
 .d-flex {
@@ -154,4 +155,16 @@ h1 {
 .links-question {
     display: inline-block;
     margin-top: 20px;
+}
+
+.form-control.is-valid {
+    height: 50px;
+}
+
+.form-control.is-invalid {
+    height: 50px;
+}
+
+.form-control.non-validation {
+    height: 50px;
 }

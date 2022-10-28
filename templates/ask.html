@@ -1,0 +1,131 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New question</title>
+
+<link href="../static/css/bootstrap.css" rel="stylesheet">
+<link href="../static/css/style.css" rel="stylesheet">
+<link href="../static/css/ask-style.css" rel="stylesheet">
+</head>
+<body class="d-flex flex-column h-100">
+    
+    <header>
+      <!-- Fixed navbar -->
+      <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Ask Kiselev</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <form class="d-flex" role="search">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit">Search</button>
+              <form>
+                <button formaction="ask.html" class="btn-ask" type="submit">Ask!</button>
+              </form>
+            </form>
+          </div>
+          <div class="user-info">
+            <div class="row">
+                <div class="col-4">
+                    <div class="user-avatar">
+                        <img src="../static/img/avatar_1.png " alt="" />
+                    </div>
+                </div>
+                <div class="col-8">
+                    <div class="user-name">
+                      User Name
+                    </div>
+                    <div class="question-text">
+                      <a href="">settings</a>
+                      <a href="">log out</a>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+    
+    <!-- Begin page content -->
+    <main class="flex-shrink-0">
+        <div class="container">
+          <div class="new-questions">
+            <h1>New question</h1>
+          </div>
+            <div class="row">
+                <div class="col-8">
+                    <div class="ask-form">
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">Title</label>
+                            <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="How to build a moon park?">
+                          </div>
+                          <div class="mb-3">
+                            <label for="exampleFormControlTextarea1" class="form-label">Text</label>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="6" placeholder="Really, how?&#10;Have no idea about it"></textarea>
+                          </div>
+                          <div class="mb-3">
+                            <label for="exampleFormControlInput2" class="form-label">Tags</label>
+                            <input type="email" class="form-control" id="exampleFormControlInput2" placeholder="moon, park, puzzle">
+                          </div>
+                    </div>
+                    <form>
+                        <button formaction="index.html" class="btn-ask-question" type="submit">Ask!</button>
+                    </form>
+                </div>
+                <div class="col-4">
+                  <div class="right-col">
+                    <div class="popular-tags">
+                      <h4>Popular tags</h4>
+                      <div class="tags">
+                        <a id="perl" href="">perl</a>
+                        <a id="python" href="">python</a>
+                        <a id="TechnoPark" href="">TechnoPark</a>
+                        <a id="MySQL" href="">MySQL</a>
+                        <a id="django" href="">django</a> 
+                        <a id="Swift" href="">Swift</a>
+                        <a id="Mailru" href="">Mail.ru</a>
+                        <a id="Firefox" href="">Firefox</a>
+                      </div>
+                    </div>
+                    <div class="best-members">
+                      <h4>Best members</h4>
+                      <div class="members">
+                        <dl>
+                          <dt>
+                            <a id="freeman" href="">Mr.Freeman</a>
+                          </dt>
+                          <dt>
+                            <a id="drhouse" href="">Dr.House</a>
+                          </dt>
+                          <dt>
+                            <a id="bender" href="">Bender</a>
+                          </dt>
+                          <dt>
+                            <a id="queenV" href="">Queen Victoria</a>
+                          </dt>
+                        </dl>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    
+    </main>
+    
+    <footer class="footer mt-auto py-3 bg-light">
+      <div class="container">
+        <span class="text-rights">All rights reserved</span>
+      </div>
+    </footer>
+    
+    
+        <script src="/docs/5.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    
+          
+      </body>
+</html>
