@@ -1,0 +1,32 @@
+{% load static %}
+<div class="question">
+    <div class="row">
+        <div class="col-2">
+            <div class="avatar">
+                <img src="../static/img/avatar_1.png " alt="" />
+            </div>
+            <div class='counter'>
+                <div id='display4'>5</div>
+                <div class='control'>
+                    <button id='plus' onclick='counter_add()'>
+                        +
+                    </button>
+                    <button id='minus' onclick='counter_minus()'>
+                        -
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-10">
+            <h2 class="question-title">Question 4</h2>
+            <div class="question-text">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum nulla ipsum, vitae
+                natus ipsa
+            </div>
+            <div class="links-question">
+                <a href="{% url 'question' %}">answers (3)</a> &emsp; Tags: <a href="">Technopark
+                </a>&emsp;<a href=""> django</a>
+            </div>
+        </div>
+    </div>
+</div>

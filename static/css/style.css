@@ -125,6 +125,7 @@ h1 {
 {
     background-color: white;
     color: black;
+    margin-left: 20px;
 }
 
 .pagination > li > a:focus,
