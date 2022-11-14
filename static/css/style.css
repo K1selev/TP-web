@@ -1,3 +1,5 @@
+/* стили пока не работают :( */
+
 .btn-ask {
     margin: 0px 30px;
     background-color: green;
@@ -168,4 +170,64 @@ h1 {
 
 .form-control.non-validation {
     height: 50px;
+}
+
+/* .form-floating {
+    margin-top: 20px;
+} */
+
+.ask-form {
+    width: 7900px;
+    display: inline-block;
+}
+
+.ask-form label {
+
+    margin-right: 30px;
+    float:left;
+}
+
+.ask-form input {
+    height: 20px;
+    width: 500px;
+    border: 1px solid #000;
+    margin-top: 20px;
+}
+
+.ask-form textarea {
+    height: 400px;
+    width: 500px;
+    border: 1px solid #000;
+    margin-top: 20px;
+}
+
+.btn-ask-question {
+    margin: 0px 60px;
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 6px;
+    color: black;
+    width: 100px;
+    height: 40px;
+}
+
+#formFile {
+    height: 38px;
+}
+
+.chouse-file img{
+    width: 150px;
+    height: 150px;
+    border-radius: 10%;
+    border: 2px solid black;
+    overflow: hidden;
+}
+
+.question-to-answer {
+
+    margin-bottom: 20px;
+}
+
+.btn-answer {
+    margin-bottom: 20px;
 }

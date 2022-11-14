@@ -1,180 +1,44 @@
+{% extends 'base.html' %}
 
-<!doctype html>
-<html lang="en" class="h-100">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Ask Kiselev</title>
-
-<link href="../static/css/bootstrap.css" rel="stylesheet">
-<link href="../static/css/style.css" rel="stylesheet">
-<link href="../static/css/ask-style.css" rel="stylesheet">
-<link href="../static/css/profile-style.css" rel="stylesheet">
-    
-    <!-- Custom styles for this template -->
-    <link href="sticky-footer-navbar.css" rel="stylesheet">
-  </head>
-  <body class="d-flex flex-column h-100">
-    
-<header>
-  <!-- Fixed navbar -->
-  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">Ask Kiselev</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-          <form>
-            <button formaction="ask.html" class="btn-ask" type="submit">Ask!</button>
-          </form>
-        </form>
-      </div>
-      <div class="user-info">
-        <div class="row">
-            <div class="col-4">
-                <div class="user-avatar">
-                    <img src="../static/img/avatar_1.png " alt="" />
-                </div>
-            </div>
-            <div class="col-8">
-                <div class="user-name">
-                  User Name
-                </div>
-                <div class="question-text">
-                  <a href="">settings</a>
-                  <a href="">log out</a>
-                </div>
-            </div>
-        </div>
-      </div>
-    </div>
-  </nav>
-</header>
+{% block content %}
 
 <!-- Begin page content -->
-<main class="flex-shrink-0">
-    <div class="container">
+<div class="row">
+  <div class="col-8">
+    <div class="ask-form">
+      <div class="col-sm-6">
+        <small id="passwordHelp" class="text-danger">
+          This nick name already exists.
+        </small>
+      </div>
 
-        <div class="row">
-            <!-- <div class="col-4">
+      <div class="mb-3">
+        <label for="inputLogin" class="col-sm-2 col-form-label text">Login</label>
+        <input type="login" class="form-control non-validation" id="inputLogin" placeholder="Login">
+      </div>
 
-                <div class="ask-form">
-                    <div class="col-sm-6">
-                        <small id="passwordHelp" class="text-danger">
-                          This nick name already exists.
-                        </small>      
-                      </div>
-
-                    <div class="mb-3">
-                        <label for="inputEmail" class="col-sm-2 col-form-label text">Login</label>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="inputEmail" class="col-sm-2 col-form-label text">Email</label>
-                    </div>
-
-                   
-                    
-                    <div class="mb-3">
-                      <label for="inputPassword" class="col-sm-2 col-form-label text">NickName</label>
-                    </div>
-
-                </div>
-                
-            </div> -->
+      <div class="mb-3">
+        <label for="inputEmail" class="col-sm-2 col-form-label text">Email</label>
+        <input type="email" class="form-control is-valid" id="inputEmail" placeholder="Email">
+      </div>
 
 
 
+      <div class="mb-3">
+        <label for="inputNickName" class="col-sm-2 col-form-label text">NickName</label>
+        <input type="nickName" class="form-control is-invalid" id="inputNickName" placeholder="Nick name">
+      </div>
 
-
-            <div class="col-8">
-                <div class="ask-form">
-                <div class="col-sm-6">
-                    <small id="passwordHelp" class="text-danger">
-                      This nick name already exists.
-                    </small>      
-                  </div>
-
-                <div class="mb-3">
-                    <label for="inputLogin" class="col-sm-2 col-form-label text">Login</label>
-                    <input type="login" class="form-control non-validation" id="inputLogin" placeholder="Login">
-                </div>
-
-                <div class="mb-3">
-                    <label for="inputEmail" class="col-sm-2 col-form-label text">Email</label>
-                    <input type="email" class="form-control is-valid" id="inputEmail" placeholder="Email">
-                </div>
-
-               
-                
-                <div class="mb-3">
-                  <label for="inputNickName" class="col-sm-2 col-form-label text">NickName</label>
-                    <input type="nickName" class="form-control is-invalid" id="inputNickName" placeholder="Nick name">
-                </div>
-
-                <div class="mb-3"> 
-                  <label for="inputAvatar" class="col-sm-2 col-form-label text">Upload avatar</label>
-                  <div class="chouse-file">
-                    <img src="../static/img/avatar_1.png " alt="" />
-                    <input class="form-control" type="file" id="formFile">
-                  </div>  
-                </div>
-
-            </div>
-            </div>
-
-
-
-
-
-            <div class="col-4">
-              <div class="right-col">
-                <div class="popular-tags">
-                  <h4>Popular tags</h4>
-                  <div class="tags">
-                    <a id="perl" href="">perl</a>
-                    <a id="python" href="">python</a>
-                    <a id="TechnoPark" href="">TechnoPark</a>
-                    <a id="MySQL" href="">MySQL</a>
-                    <a id="django" href="">django</a> 
-                    <a id="Swift" href="">Swift</a>
-                    <a id="Mailru" href="">Mail.ru</a>
-                    <a id="Firefox" href="">Firefox</a>
-                  </div>
-                </div>
-                <div class="best-members">
-                  <h4>Best members</h4>
-                  <div class="members">
-                    <dl>
-                      <dt>
-                        <a id="freeman" href="">Mr.Freeman</a>
-                      </dt>
-                      <dt>
-                        <a id="drhouse" href="">Dr.House</a>
-                      </dt>
-                      <dt>
-                        <a id="bender" href="">Bender</a>
-                      </dt>
-                      <dt>
-                        <a id="queenV" href="">Queen Victoria</a>
-                      </dt>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
+      <div class="mb-3">
+        <label for="inputAvatar" class="col-sm-2 col-form-label text">Upload avatar</label>
+        <div class="chouse-file">
+          <!-- <img src="../static/img/avatar_1.png " alt="" /> -->
+          <input class="form-control" type="file" id="formFile">
         </div>
+      </div>
+
     </div>
-
-</main>
-
-<footer class="footer mt-auto py-3 bg-light">
-  <div class="container">
-    <span class="text-rights">All rights reserved</span>
   </div>
-</footer>
-</html>
+</div>
+
+{% endblock content %}

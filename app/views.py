@@ -15,3 +15,19 @@ def index(request):
 def question(request):
     # return HttpResponse("hello world")
     return render(request, 'question.html')
+
+def ask(request):
+    # return HttpResponse("hello world")
+    return render(request, 'ask.html')
+
+def profile(request):
+    # return HttpResponse("hello world")
+    return render(request, 'profile.html')
+
+def login(request):
+    # return HttpResponse("hello world")
+    return render(request, 'login.html')
+    
+def signup(request):
+    # return HttpResponse("hello world")
+    return render(request, 'signup.html')
