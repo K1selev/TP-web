@@ -10,6 +10,7 @@
 
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
     </script>
 </head>
 
@@ -19,7 +20,7 @@
         <!-- Fixed navbar -->
         <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" href="{% url 'question' %}">Ask Kiselev</a>
+                <a class="navbar-brand" href="{% url 'index' %}">Ask Kiselev</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
                     aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -61,7 +62,7 @@
         
     </main>
 
-    <footer class="footer mt-auto py-3 bg-light">
+    <footer class="footer mt-auto py-3 bg-light" id="footerCustom">
         <div class="container">
             <span class="text-rights">All rights reserved</span>
         </div>

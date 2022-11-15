@@ -31,3 +31,7 @@ def login(request):
 def signup(request):
     # return HttpResponse("hello world")
     return render(request, 'signup.html')
+
+def logout(request):
+    return HttpResponse("logout(((")
+    # return render(request, 'signup.html')

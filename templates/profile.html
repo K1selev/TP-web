@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
 
 <!-- Begin page content -->
@@ -32,11 +32,11 @@
       <div class="mb-3">
         <label for="inputAvatar" class="col-sm-2 col-form-label text">Upload avatar</label>
         <div class="chouse-file">
-          <!-- <img src="../static/img/avatar_1.png " alt="" /> -->
+          <img src="{% static 'img/avatar_1.png' %}" alt="" />
           <input class="form-control" type="file" id="formFile">
         </div>
       </div>
-
+      <button type="submit" class="btn btn-primary">Сохранить</button>
     </div>
   </div>
 </div>

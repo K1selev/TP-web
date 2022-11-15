@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
 
 <!-- Begin page content -->
@@ -7,9 +7,9 @@
   <div class="col-8">
     <div class="question-to-answer">
       <div class="row">
-        <div class="col-2">
+        <div class="col-3">
           <div class="avatar">
-            <img src="../static/img/avatar_1.png " alt="" />
+            <img src="{% static 'img/avatar_1.png' %}" alt="" />
           </div>
           <div class='counter'>
             <div id='display'>5</div>
@@ -43,7 +43,7 @@
             }
           </script>
         </div>
-        <div class="col-10">
+        <div class="col-9">
           <h2 class="question-title">Question 1</h2>
           <div class="question-text">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus quae vero quidem animi maxime tempore
@@ -56,8 +56,8 @@
         </div>
       </div>
     </div>
-    {% include 'answer.html' %}
-    {% include 'answer.html' %}
+    {% include 'answerBlock.html' %}
+    {% include 'answerBlock.html' %}
 
     {% block pagination %}{% endblock pagination %}
 
