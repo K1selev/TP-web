@@ -36,9 +36,9 @@
                 </div>
                 <div class="user-info">
                     {% if user.is_authenticated %}
-                    {% include 'authorized.html' %}
-                    {% else %}
                     {% include 'noauthorized.html' %}
+                    {% else %}
+                    {% include 'authorized.html' %}
                     {% endif %}
                 </div>
             </div>
