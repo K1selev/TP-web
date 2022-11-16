@@ -5,15 +5,14 @@ from app.models import *
 from faker import Faker
 import random
 
-USERS_COUNT = 10000
-QUESTIONS_COUNT = 100000
-ANSWERS_COUNT = 1000000
-TAGS_COUNT = 10000
+USERS_COUNT = 10001
+QUESTIONS_COUNT = 100001
+ANSWERS_COUNT = 1000001
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        self.create_users()
-        self.create_profiles()
+        # self.create_users()
+        # self.create_profiles()
         self.create_questions()
         self.create_answers()
 
@@ -29,7 +28,7 @@ class Command(BaseCommand):
         faker = Faker()
         users = User.objects.all()
         for i in range(USERS_COUNT):
-            profiles.append(Profile(user=users[i], nickname=faker.word()))
+            profiles.append(Profile(user=users[i]))
         Profile.objects.bulk_create(profiles, USERS_COUNT)
 
     def create_questions(self):
@@ -37,7 +36,7 @@ class Command(BaseCommand):
         faker = Faker()
         users = Profile.objects.all()
         for i in range(QUESTIONS_COUNT):
-            questions.append(Question(title=faker.sentence(), text=faker.text(), date_published=faker.date_time_this_year(), is_published=True, author=random.choice(users)))
+            questions.append(Question(title=faker.sentence(), text=faker.text(), date=faker.date_time_this_year(), author=random.choice(users)))
         Question.objects.bulk_create(questions, QUESTIONS_COUNT)
 
     def create_answers(self):
@@ -46,5 +45,5 @@ class Command(BaseCommand):
         questions = Question.objects.all()
         users = Profile.objects.all()
         for i in range(ANSWERS_COUNT):
-            answers.append(Answer(text=faker.text(), correct=False, question=random.choice(questions), date_published=faker.date_time_this_year(), author=random.choice(users)))
+            answers.append(Answer(text=faker.text(), is_correct=False, to_question=random.choice(questions), date=faker.date_time_this_year(), author=random.choice(users)))
         Answer.objects.bulk_create(answers, ANSWERS_COUNT)

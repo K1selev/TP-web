@@ -12,7 +12,7 @@ class Tag(models.Model):
     rating = models.IntegerField(default=0)
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
     # avatar = models.ImageField(default='static/img/1.jpg')
     rating = models.IntegerField(default=0)
 
@@ -41,6 +41,7 @@ class Answer(models.Model):
     is_correct = models.BooleanField(default=False)
     rating = models.IntegerField(default=0)
     to_question = models.ForeignKey(Question, models.CASCADE)
+    date = models.DateField(default=timezone.now)
 
 class Like(models.Model):
     user = models.ForeignKey(Profile, models.CASCADE, )
