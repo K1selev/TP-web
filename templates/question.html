@@ -1,103 +1,35 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
+
 {% block content %}
 
-<!-- Begin page content -->
-<div class="row">
-  <div class="col-8">
-    <div class="question-to-answer">
-      <div class="row">
-        <div class="col-3">
-          <div class="avatar">
-            <img src="{% static 'img/avatar_1.png' %}" alt="" />
-          </div>
-          <div class='counter'>
-            <div id='display'>5</div>
-            <div class='control'>
-              <button id='plus' onclick='counter_add()'>
-                +
-              </button>
-              <button id='minus' onclick='counter_minus()'>
-                -
-              </button>
-            </div>
-          </div>
-
-          <script>
-            const display = document.getElementById('display');
-            function counter_add() {
-              const number = display.innerText;
-              if (parseInt(number, 10) > 4) {
-                display.innerText = parseInt(number, 10);
-              } else {
-                display.innerText = parseInt(number, 10) + 1;
-              }
-            }
-            function counter_minus() {
-              const number = display.innerText;
-              if (parseInt(number, 10) < 1) {
-                display.innerText = parseInt(number, 10);
-              } else {
-                display.innerText = parseInt(number, 10) - 1;
-              }
-            }
-          </script>
-        </div>
-        <div class="col-9">
-          <h2 class="question-title">Question</h2>
-          <!-- <h2 class="question-title">{{question.title}}</h2> -->
-          <div class="question-text">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus quae vero quidem animi maxime tempore
-            architecto alias itaque aperiam impedit doloribus optio sequi culpa vel, pariatur magni cupiditate! Error,
-            necessitatibus?
-          </div>
-          <!-- <div class="question-text">
-           {{question.text}}
-          </div> -->
-          <div class="links-question">
-            Tags: <a href="">Technopark </a>&emsp;<a href=""> django</a>
-          </div>
-        </div>
-      </div>
+<div class="container-fluid">
+    <div class="media mt-4">
+        {% include 'inc/question_card.html' %}
     </div>
-    {% include 'answerBlock.html' %}
-    {% include 'answerBlock.html' %}
+    <hr>
 
-    {% block pagination %}{% endblock pagination %}
+    {% for answer in answers.all %}
+        {% include 'inc/answer.html' %}
+    {% endfor %}
 
-    <div class="mb-3">
-      <textarea class="form-control" id="exampleFormControlTextarea1" rows="6"
-        placeholder="Enter your answer here"></textarea>
-    </div>
+    {% if user.is_authenticated %}
 
-    <form>
-      <button formaction="" class="btn-answer" type="submit">Answer</button>
+    <br>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            {% for field in form.visible_fields %}
+                {{ field }}
+            {% endfor %}
+            <br>
+            <button type="submit" class="btn btn-primary">Send</button>
+        </div>
     </form>
 
-  </div>
+    {% endif %}
+
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-<script>
-
-  // the selector will match all input controls of type :checkbox and attach a click event handler 
-  $("input:checkbox").on('click', function () {
-    // in the handler, 'this' refers to the box clicked on
-    var $box = $(this);
-    if ($box.is(":checked")) {
-      // the name of the box is retrieved using the .attr() method
-      // as it is assumed and expected to be immutable
-      var group = "input:checkbox[name='" + $box.attr("name") + "']";
-      // the checked state of the group/box on the other hand will change
-      // and the current value is retrieved using .prop() method
-      $(group).prop("checked", false);
-      $box.prop("checked", true);
-    } else {
-      $box.prop("checked", false);
-    }
-  });
-</script>
-
-
-{% endblock content %}
+{% endblock %}

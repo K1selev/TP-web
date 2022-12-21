@@ -1,67 +1,23 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-<h3>Registration</h3>
-<form class="needs-validation" novalidate>
-    <div class="form-group">
-        <label for="login">Login</label>
-        <input type="text" class="form-control" id="login" placeholder="dr_pepper" required>
-        <div class="invalid-feedback">
-            Login is required
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="exampleInputEmail1">Email</label>
-        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-               placeholder="drpepper@mail.ru">
-        <div class="invalid-feedback">
-            Something went wrong
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="nick">NickName</label>
-        <input type="text" class="form-control" id="nick" placeholder="DrPepper" required>
-        <div class="invalid-feedback">
-            Nick Name is required
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="exampleInputPassword1">Password</label>
-        <input type="password" class="form-control" id="exampleInputPassword1"
-               aria-describedby="passwordHelpInline" required
-               minlength="8" maxlength="20">
-    </div>
-    <div class="form-group">
-        <label for="exampleInputPassword2">Repeat password</label>
-        <input type="password" class="form-control" id="exampleInputPassword2"
-               aria-describedby="passwordHelpInline" required
-               minlength="8" maxlength="20">
-    </div>
-    <div class="form-group">
-        <label for="exampleFormControlFile1">Upload avatar</label>
-        <input type="file" class="form-control-file" id="exampleFormControlFile1">
-    </div>
-    <button type="submit" class="btn btn-primary">Register</button>
-</form>
 
-<script>
-    // Example starter JavaScript for disabling form submissions if there are invalid fields
-    (function () {
-        'use strict';
-        window.addEventListener('load', function () {
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            var forms = document.getElementsByClassName('needs-validation');
-            // Loop over them and prevent submission
-            var validation = Array.prototype.filter.call(forms, function (form) {
-                form.addEventListener('submit', function (event) {
-                    if (form.checkValidity() === false) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-        }, false);
-    })();
-</script>
-{% endblock content %}
+<div class="mb-5 mt-5">
+    <h4 class="mb-3">Registration</h4>
+    <hr>
+
+    <form method="POST">
+        <div class="askme-wrong askme-higher">{{ form.non_field_errors.0}}</div>
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+            <div class="form-group">
+                <label for="title">{{field.label}}</label>
+                {{field.as_widget}}
+            </div>
+        {% endfor %}
+        
+        <button type="submit" class="askme-sign btn =btn-primary btn-success w-25" name="SignUp">Register</button>
+</div>
+
+{% endblock %}

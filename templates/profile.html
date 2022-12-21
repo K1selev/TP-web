@@ -1,44 +1,23 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
+
 {% block content %}
-
-<!-- Begin page content -->
-<div class="row">
-  <div class="col-8">
-    <div class="ask-form">
-      <div class="col-sm-6">
-        <small id="passwordHelp" class="text-danger">
-          This nick name already exists.
-        </small>
-      </div>
-
-      <div class="mb-3">
-        <label for="inputLogin" class="col-sm-2 col-form-label text">Login</label>
-        <input type="login" class="form-control non-validation" id="inputLogin" placeholder="Login">
-      </div>
-
-      <div class="mb-3">
-        <label for="inputEmail" class="col-sm-2 col-form-label text">Email</label>
-        <input type="email" class="form-control is-valid" id="inputEmail" placeholder="Email">
-      </div>
-
-
-
-      <div class="mb-3">
-        <label for="inputNickName" class="col-sm-2 col-form-label text">NickName</label>
-        <input type="nickName" class="form-control is-invalid" id="inputNickName" placeholder="Nick name">
-      </div>
-
-      <div class="mb-3">
-        <label for="inputAvatar" class="col-sm-2 col-form-label text">Upload avatar</label>
-        <div class="chouse-file">
-          <img src="{% static 'img/avatar_1.png' %}" alt="" />
-          <input class="form-control" type="file" id="formFile">
-        </div>
-      </div>
-      <button type="submit" class="btn btn-primary">Сохранить</button>
+    <div class="col mt-5">
+        <form enctype="multipart/form-data" method="POST">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-5">
+                    <div class="form-group">
+                        <label for="title"> {{ form.login.label }} </label>
+                        {{ form.login.as_widget }}
+                    </div>
+                    <div class="form-group">
+                        <label for="title"> {{ form.email.label }} </label>
+                        {{ form.email.as_widget }}
+                    </div>
+                    <button class="btn btn btn-primary" type="submit">Save</button>
+                </div>
+            </div>
+        </form>
     </div>
-  </div>
-</div>
-
 {% endblock content %}

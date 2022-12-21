@@ -1,0 +1,44 @@
+{% load static %}
+
+<div class="container-fluid mt-3">
+    <div class="media">
+        <div class="mr-4">
+            <div class="">
+                <a href="# ">
+                    <img class="mt-1 mb-4" style="width: 50px;" src="{% static 'img/avatar_1.png' %} " alt="Avatar ">
+                </a>
+            </div>
+
+            <div class="text-center">
+                <a href="# ">
+                    <img class=" " style="width: 40px; height: 30px; " src="{% static 'img/up.png' %} " alt="Rating Up ">
+                </a>
+                <div class="text-center">
+                    {{ question.rating }}
+                </div>
+                <a href="# ">
+                    <img class=" " style="width: 40px; height: 30px; " src="{% static 'img/down.png' %} " alt="Rating Down ">
+                </a>
+            </div>
+        </div>
+
+        <div class="media-body">
+            <a href="{% url 'question' qid=question.id %}" class=""><h4 class="mt-2 mb-n3 ml-2">{{ question.title }}</h4></a>
+            <br>
+            <p class="ml-2 mt-3 " style="">{{ question.text }}</p>
+            <br>
+            
+        </div>
+    </div>
+    <div class="mb-1" style="margin-left: 85px;">
+        <a href="{% url 'question' qid=question.id %}" class="d-inline mr-4 ">answers ({{ question.answers_number }})</a>
+        <div class="d-inline-block ">
+            <p class="d-inline mr-2 ">Tags:</p>
+
+            {% for tag in question.tags.all %}
+                <a href="{% url 'tag' tag_name=tag.name %}" type="button " class="btn btn-light ">{{ tag.name }}</a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<hr>

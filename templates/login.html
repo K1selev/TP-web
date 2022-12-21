@@ -1,18 +1,30 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 
-<h3>Log In</h3>
-<form>
-    <div class="form-group">
-        <label for="exampleInputEmail1">Email</label>
-        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-    </div>
-    <div class="form-group">
-        <label for="exampleInputPassword1">Password</label>
-        <input type="password" class="form-control" id="exampleInputPassword1">
-    </div>
-    <button type="submit" class="btn btn-primary">Log in</button>
-</form>
+<div class="mb-5 mt-5">
+    <h4 class="mb-3">Log In</h4>
+    <hr>
 
-{% endblock content %}
+    <form method="POST">
+        {% csrf_token %}
+        <div class="askme-wrong"> {{ form.non_field_errors.0 }}</div>
+        {% for field in form.visible_fields %}
+            <div class="askme-higher">
+            <label for="title">{{field.label}}</label>
+            {{field.as_widget}}
+            </div>
+        {% endfor %}
+
+        <div class="alert alert-danger invisible" role="alert">
+            Sorry, this login does not exist
+            Sorry, wrong password
+        </div>
+        
+        <button class="btn btn-primary btn-block w-25 mb-2" type="submit">Login in</button>
+        <a type="button" href="{% url 'signup' %}" class="btn btn-success w-25" role="button">Sign up</a>
+    </form>
+</div>
+
+{% endblock %}

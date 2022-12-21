@@ -1,72 +1,37 @@
 {% load static %}
 
 <!doctype html>
-<html lang="en" class="h-100">
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Ask Kiselev</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href={% static "css/bootstrap.css" %}>
+    <link rel="stylesheet" href={% static "css/ask.css" %}>
 
-    </script>
+    <title>Ask</title>
 </head>
 
 <body>
-
-    <header>
-        <!-- Fixed navbar -->
-        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="{% url 'index' %}">Ask Kiselev</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-                    aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarCollapse">
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                        <form>
-                            <button formaction="{% url 'ask' %}" class="btn-ask" type="submit">Ask!</button>
-                        </form>
-                    </form>
-                </div>
-                <div class="user-info">
-                    {% if user.is_authenticated %}
-                    {% include 'noauthorized.html' %}
-                    {% else %}
-                    {% include 'authorized.html' %}
-                    {% endif %}
-                </div>
+    <div class="container-fluid">
+        {% include 'inc/navbar.html' %}
+        <div class="row ml-0 ml-lg-4 ml-md-3 ml-sm-1 ml-xs-1 pt-5 mr-lg-3 mr-md-2">
+            <div class="col-md-8 blog-main ">
+                {% block content %} {% endblock %}
             </div>
-        </nav>
-    </header>
-
-    <!-- Begin page content -->
-    <main class="flex-shrink-0">
-        <div class="container">
-            <div class="row">
-                <div class="col-8">
-                    {% block content %}{% endblock content %}
-                </div>
-                <div class="col-4">
-                    {% include 'right_menu.html' %}
-                </div>
-            </div>
-            {% block pagination %}{% endblock pagination %}
+            <aside class="col-md-4 blog-sidebar d-none d-lg-block d-md-block ">
+                {% include 'inc/right_menu.html' %}
+            </aside>
         </div>
+        {% include 'inc/footer.html' %}
+    </div>
 
-        
-    </main>
-
-    <footer class="footer mt-auto py-3 bg-light" id="footerCustom">
-        <div class="container">
-            <span class="text-rights">All rights reserved</span>
-        </div>
-    </footer>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js " integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n " crossorigin="anonymous "></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js " integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo " crossorigin="anonymous "></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js " integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6 " crossorigin="anonymous "></script>
 </body>
 
 </html>

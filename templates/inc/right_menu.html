@@ -1,0 +1,17 @@
+<div class="container mt-4 ">
+    <div class="pt-5 pl-3 ">
+        <h4 class="pb-2 ">Popular tags</h4>
+        {% for tag in popular_tags.all %}
+            <a href="{% url 'tag' tag_name=tag.name %}" type="button " class="btn btn-light mb-1 ">{{ tag.name }}</a>
+        {% endfor %}
+    </div>
+
+    <div class="pt-5 pl-3 ">
+        <h4 class="pb-2 ">Best Members</h4>
+        <ol class=" list-unstyled ">
+            {% for nickname in best_members.all %}
+                <li><a href="# ">{{ nickname.user }}</a></li>
+            {% endfor %}
+        </ol>
+    </div>
+</div>

@@ -1,49 +1,111 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from django.contrib.auth.hashers import make_password
-from app.models import *
+from app.models import Profile, Tag, Question, Answer
+from random import choice, sample
 from faker import Faker
-import random
 
-USERS_COUNT = 10001
-QUESTIONS_COUNT = 100001
-ANSWERS_COUNT = 1000001
+f = Faker()
+
+default_avatars = [
+    '/static/img/avatar_1.png'
+]
 
 class Command(BaseCommand):
+    help = 'Fill database with faker data'
+
+    def add_arguments(self, parser):
+        parser.add_argument('--profile', '-p', type=int)
+        parser.add_argument('--tag', '-t', type=int)
+        parser.add_argument('--question', '-q', type=int)
+        parser.add_argument('--answer', '-a', type=int)
+
+    def fill_profiles(self, count):
+        for _ in range(count):
+            u = User.objects.create_user(f.name(), f.email(), f.password())
+            u.save()
+            
+            Profile.objects.create(
+                rating=f.random_int(min=-100, max=100),
+                avatar=choice(default_avatars),
+                user=u
+            )
+    
+    def fill_tags(self, count):
+        for _ in range(count):
+            Tag.objects.create(
+                name=f.word(),
+                references_num=0
+            )
+    
+    def fill_questions(self, count):
+        profiles_id = list(Profile.objects.values_list('id', flat=True))
+        tags_id = list(Tag.objects.values_list('id', flat=True))
+        
+        for _ in range(count):
+            rtng = f.random_int(min=0, max=len(profiles_id) - 1)
+            q = Question.objects.create(
+                title='. '.join(f.sentences(f.random_int(min=2, max=3))),
+                text='. '.join(f.sentences(f.random_int(min=20, max=40))),
+                rating=rtng,
+                pub_date=f.date_time(),
+                answers_number=0,
+                author=Profile.objects.get(pk=choice(profiles_id))
+            )
+            q.save()
+
+            cur_tags_id = sample(tags_id, f.random_int(min=1, max=5))
+            for tag_id in cur_tags_id:
+                t = Tag.objects.get(pk=tag_id)
+                t.references_num += 1
+                t.save()
+                q.tags.add(t)
+            
+            likes_num = rtng
+            profiles_id_like = sample(profiles_id, likes_num)
+            
+            for profile_id in profiles_id_like:
+                q.likes.add(Profile.objects.get(pk=profile_id))
+    
+    def fill_answers(self, count):
+        profiles_id = list(Profile.objects.values_list('id', flat=True))
+        qeustions_id = list(Question.objects.values_list('id', flat=True))
+
+        for _ in range(count):
+            rtng = f.random_int(min=0, max=len(profiles_id) - 1)
+            q = Question.objects.get(pk=choice(qeustions_id))
+            q.answers_number += 1
+            q.save()
+
+            a = Answer.objects.create(
+                text='. '.join(f.sentences(f.random_int(min=20, max=40))),
+                is_correct=choice([True, False]),
+                rating=rtng,
+                pub_date=f.date_time(),
+                question=q,
+                author=Profile.objects.get(pk=choice(profiles_id))
+            )
+            a.save()
+
+            likes_num = rtng
+            profiles_id_like = sample(profiles_id, likes_num)
+            
+            for profile_id in profiles_id_like:
+                q.likes.add(Profile.objects.get(pk=profile_id))
+
+
     def handle(self, *args, **options):
-        # self.create_users()
-        # self.create_profiles()
-        self.create_questions()
-        self.create_answers()
+        if (options['profile']):
+            self.fill_profiles(options.get('profile', 0))
+        if (options['tag']):
+            self.fill_tags(options.get('tag', 0))
+        if (options['question']):
+            self.fill_questions(options.get('question', 0))
+        if (options['answer']):
+            self.fill_answers(options.get('answer', 0))
+        # if options['ratio']:
+        #     ratio = options.get('ratio', 0)
+        #     self.fill_profiles(ratio)
+        #     self.fill_tags(ratio)
+        #     self.fill_questions(ratio * 10)
+        #     self.fill_answers(ratio * 100)
 
-    def create_users(self):
-        users = []
-        faker = Faker()
-        for i in range(USERS_COUNT):
-            users.append(User(username=faker.user_name() + str(i), password=make_password('password'), email=faker.email()))
-        User.objects.bulk_create(users, USERS_COUNT)
-
-    def create_profiles(self):
-        profiles = []
-        faker = Faker()
-        users = User.objects.all()
-        for i in range(USERS_COUNT):
-            profiles.append(Profile(user=users[i]))
-        Profile.objects.bulk_create(profiles, USERS_COUNT)
-
-    def create_questions(self):
-        questions = []
-        faker = Faker()
-        users = Profile.objects.all()
-        for i in range(QUESTIONS_COUNT):
-            questions.append(Question(title=faker.sentence(), text=faker.text(), date=faker.date_time_this_year(), author=random.choice(users)))
-        Question.objects.bulk_create(questions, QUESTIONS_COUNT)
-
-    def create_answers(self):
-        answers = []
-        faker = Faker()
-        questions = Question.objects.all()
-        users = Profile.objects.all()
-        for i in range(ANSWERS_COUNT):
-            answers.append(Answer(text=faker.text(), is_correct=False, to_question=random.choice(questions), date=faker.date_time_this_year(), author=random.choice(users)))
-        Answer.objects.bulk_create(answers, ANSWERS_COUNT)
