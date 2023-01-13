@@ -57,21 +57,21 @@ def question(request, qid):
     return render(request, 'question.html', context)
 
 def login(request):
+    # print(request.GET)
+    # print(request.POST)
     redirected_path = request.GET.get('next', '/')
     form = LoginForm(request.POST)
 
     if request.POST:
         form = LoginForm(request.POST)
+
         if form.is_valid():
-            user = auth.authenticate(
-                username=form.cleaned_data.get('login'),
-                password=form.cleaned_data.get('password')
-            )
-            if user is not None:
+            user = auth.authenticate(request, **form.cleaned_data)
+            if user:
                 auth.login(request, user)
-                return redirect(redirected_path)
+                return redirect(reverse("index"))
             else:
-               form.add_error(None, 'Wrong login or password')
+                form.add_error(None, 'Wrong login or password')
 
     context['form'] = form
     return render(request, 'login.html', context)

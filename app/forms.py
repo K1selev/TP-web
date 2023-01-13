@@ -38,19 +38,14 @@ class RegisterForm(forms.Form):
 
 
 class LoginForm(forms.Form):
-    login = forms.CharField(
-        max_length=40,
-        label='Login',
-        widget=forms.TextInput(
-            attrs={ 'class': 'form-control' }
-        )
-    )
-    password = forms.CharField(
-        max_length=40,
-        widget=forms.PasswordInput(
-            attrs={ 'class': 'form-control' }
-        )
-    )
+    username = forms.CharField(label="Login", max_length=20, widget=forms.TextInput(attrs={'placeholder':'Your login', 'class':"form-control log_in ",}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class':"form-control log_in", 'placeholder':'Your password'}), max_length=20, )
+
+    def clean_password(self):
+        data = self.cleaned_data['password']
+        if data == "password":
+            raise ValidationError("password password can't be used")
+        return data
 
 class ProfileForm(forms.Form):
     login = forms.CharField(

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load bootstrap5%}
 
 {% block content %}
 
@@ -7,24 +8,10 @@
     <h4 class="mb-3">Log In</h4>
     <hr>
 
-    <form method="POST">
+    <form novalidate action="/login/" class="was-validated mb-5" method="post">
         {% csrf_token %}
-        <div class="askme-wrong"> {{ form.non_field_errors.0 }}</div>
-        {% for field in form.visible_fields %}
-            <div class="askme-higher">
-            <label for="title">{{field.label}}</label>
-            {{field.as_widget}}
-            </div>
-        {% endfor %}
-
-        <div class="alert alert-danger invisible" role="alert">
-            Sorry, this login does not exist
-            Sorry, wrong password
-        </div>
-        
+        {% bootstrap_form form %}
         <button class="btn btn-primary btn-block w-25 mb-2" type="submit">Login in</button>
-        <a type="button" href="{% url 'signup' %}" class="btn btn-success w-25" role="button">Sign up</a>
     </form>
 </div>
-
 {% endblock %}
