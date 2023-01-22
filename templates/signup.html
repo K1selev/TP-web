@@ -1,22 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
+{% load bootstrap5%}
 
 {% block content %}
 
 <div class="mb-5 mt-5">
     <h4 class="mb-3">Registration</h4>
     <hr>
-
-    <form method="POST">
-        <div class="askme-wrong askme-higher">{{ form.non_field_errors.0}}</div>
+    <form novalidate action="/signup/" class="was-validated mb-5" method="post">
         {% csrf_token %}
-        {% for field in form.visible_fields %}
-            <div class="form-group">
-                <label for="title">{{field.label}}</label>
-                {{field.as_widget}}
-            </div>
-        {% endfor %}
-        
+        {% bootstrap_form user_form %}
         <button type="submit" class="askme-sign btn =btn-primary btn-success w-25" name="SignUp">Register</button>
 </div>
 

@@ -1,124 +1,115 @@
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import datetime
-from django.utils import timezone
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.db.models import Count
+from django.urls import reverse
 
-class ProfileManager(models.Manager):
-    def best(self):
-        return self.order_by('-rating')[:5]
-    
-    def is_exist(self, name, email):
-        return User.objects.filter(username=name).count()
+class TopProfileManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().order_by('-rating')[:5]
+
 
 class Profile(models.Model):
-    rating = models.IntegerField(default=0)
-    avatar = models.ImageField(
-        upload_to='static/img/avatars', default='static/img/avatar_1.png'
-    )
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    avatar = models.ImageField(upload_to="avatars/", default='def.jpeg', blank=True, null=True)
+    rating = models.IntegerField(null=True)
 
-    objects = ProfileManager()
+    users = models.Manager()
+    top_users = TopProfileManager()
 
     def __str__(self):
         return self.user.username
 
-class TagManager(models.Manager):
-    def popular(self):
-        return self.order_by('-references_num')[:10]
-    
-    def create_from_list(self, tags):
-        for n in tags:
-            if not self.filter(name=n).count():
-                self.create(name=n)
+    class Meta:
+        ordering = ['-rating']
+
+
+class TopTagManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().annotate(num_quest = Count('questions')).order_by('-num_quest')[:7]
+
 
 class Tag(models.Model):
-    name = models.CharField(max_length=100, unique=True, db_index=True)
-    references_num = models.PositiveIntegerField(default=0)
+    tag = models.CharField(max_length=30, unique=True)
 
-    objects = TagManager()
+    tags = models.Manager()
+    top_tags = TopTagManager()
 
-    def __str__(self):
-        return '{} {}'.format(self.name, self.references_num)
-
-class LikeDislike(models.Model):
-    like_dislike = models.AutoField(primary_key=True)
-
-    LIKE = 1
-    DISLIKE = -1
-    VOTES = ((LIKE, 'Like'), (DISLIKE, 'Dislike'))
-
-    user = models.ForeignKey(Profile, on_delete=models.PROTECT)
-    vote = models.SmallIntegerField(choices=VOTES)
-
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey()
 
     def __str__(self):
-        return '{} {}'.format(self.user, self.vote)
+        return self.tag
 
-class QuestionManager(models.Manager):
-    def newest(self):
-        return self.filter(is_active=True).order_by('-pub_date')
-    
-    def hottest(self):
-        return self.filter(is_active=True).order_by('-rating')
+    def get_absolute_url(self):
+        return reverse('tag', kwargs={'slug': self.tag})
 
-    def by_tag(self, tag_name):
-        return self.filter(is_active=True, tags__name=tag_name)
+    class Meta:
+        ordering = ['tag']
+
+
+class HotQustionManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().annotate(num_likes=Count('likes')).order_by('-num_likes')
+
 
 class Question(models.Model):
-    title = models.CharField(max_length=200)
-    text = models.TextField()
-    rating = models.IntegerField(default=0, db_index=True)
-    is_active = models.BooleanField(default=True)
-    pub_date = models.DateTimeField(default=timezone.now, db_index=True)
-    answers_number = models.PositiveIntegerField(default=0)
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    create_date = models.DateField(auto_now_add=True)
+    tag = models.ManyToManyField(Tag, related_name='questions')
+    # rating = models.IntegerField()
 
-    author = models.ForeignKey(Profile, on_delete=models.PROTECT)
-    tags = models.ManyToManyField(Tag, blank=True)
-    
-    # votes = GenericRelation(to=LikeDislike, related_query_name="question")
-    likes = models.ManyToManyField(Profile, blank=True, related_name='question_likes')
-    dislikes = models.ManyToManyField(Profile, blank=True, related_name='question_dislikes')
+    new_questions = models.Manager()
+    hot_questions = HotQustionManager()
 
-    objects = QuestionManager()
+    def get_absolute_url(self):
+        return reverse('question', kwargs={'id': self.pk})
 
     def __str__(self):
-        return '{} {}'.format(self.title, self.rating)
-    
-    def add_tags(self, tags):
-        for tag in tags:
-            self.tags.add(Tag.objects.filter(name=tag)[0])
+        return self.title
 
-class AnswerManager(models.Manager):
-    def newest(self, id):
-        q = Question.objects.get(pk=id)
-        return self.filter(is_active=True, question=q).order_by('-pub_date')
-    
-    def hottest(self, id):
-        q = Question.objects.get(pk=id)
-        return self.filter(is_active=True, question=q).order_by('-rating')
+    class Meta:
+        ordering = ["create_date"]
+
 
 class Answer(models.Model):
-    text = models.TextField()
+    content = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_create = models.DateField(auto_now_add=True)
     is_correct = models.BooleanField(default=False)
-    rating = models.IntegerField(default=0)
-    is_active = models.BooleanField(default=True)
-    pub_date = models.DateTimeField(default=timezone.now)
+    # rating = models.IntegerField()
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True, related_name='answers')
 
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    author = models.ForeignKey(Profile, on_delete=models.PROTECT)
-    
-    # votes = GenericRelation(to=LikeDislike, related_query_name="answer")
-    likes = models.ManyToManyField(Profile, blank=True, related_name='answer_likes')
-    dislikes = models.ManyToManyField(Profile, blank=True, related_name='answer_dislikes')
-
-    objects = AnswerManager()
+    answers = models.Manager()
 
     def __str__(self):
-        return '{} {}'.format(self.rating, self.text)
+        return self.content
+
+    class Meta:
+        ordering = ['-is_correct']
+
+
+
+class LikeManager(models.Manager):
+    def count_likes(self, question_id):
+        return super().get_queryset().filter(question_pk=question_id).count()
+
+
+class Like(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name = 'likes')
+
+    likes = LikeManager()
+
+class LikeAnswerManager(models.Manager):
+    def count_likes(self, answer_id):
+        return super().get_queryset().filter(answer_pk=answer_id).count()
+
+
+
+class LikeAnswer(models.Model):
+    author = models.ForeignKey(User, on_delete= models.CASCADE)
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='likes')
+
+    likes = LikeAnswerManager()
 
 

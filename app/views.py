@@ -1,141 +1,143 @@
-from django.shortcuts import render, redirect, reverse
-from django.http import HttpResponse
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.contrib.auth.models import User
-import django.contrib.auth as auth
+from django.contrib import auth
 from django.contrib.auth.decorators import login_required
+from django.forms import model_to_dict
+from django.http import HttpResponseNotFound, HttpResponseRedirect, HttpResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views.decorators.http import require_http_methods
 
-from app.models import Profile, Tag, Question, Answer
-from app.forms import LoginForm, RegisterForm, ProfileForm, AskForm, AnswerForm
+from app.forms import *
+from app.models import *
 
-def paginate(object_list, request):
-    paginator = Paginator(list(object_list), 10)
-    page = request.GET.get('page')
-    try:
-        objects_page = paginator.get_page(page)
-    except PageNotAnInteger:
-        objects_page = paginator.page(1)
-    except EmptyPage:
-        objects_page = paginator.page(paginator.num_pages)
-    return objects_page
 
-context = {
-    'popular_tags': Tag.objects.popular(),
-    'best_members': Profile.objects.best(),
-}
+def paginate(content, request, number):
+    paginator = Paginator(content, number)
+    page_num = request
+    return paginator.get_page(page_num)
+
+def search(query, request, search_field):
+    search_query = request.GET.get('search','')
+    if search_query:
+        if search_field == 'title':
+            return query.filter(title__icontains=search_query).all()
+        elif search_field == 'content':
+            return query.filter(content__icontains=search_query).all()
+    else:
+        return query.all()
 
 def index(request):
-    newest_questions = Question.objects.newest()
-    context['questions'] = paginate(newest_questions, request)
-    return render(request, 'index.html', context)
+    new_questions = search(Question.new_questions, request, 'title')
+    questions = paginate(new_questions, request.GET.get('page'), 20)
+    return render(request, "index.html", {"questions":questions})
 
 def hot(request):
-    hottest_questions = Question.objects.hottest()
-    context['questions'] = paginate(hottest_questions, request)
-    return render(request, 'hot.html', context)
+    hot_questions = search(Question.hot_questions, request, 'title')
+    questions = paginate(hot_questions, request.GET.get('page'), 20)
+    return render(request, "hot.html", {"questions":questions})
 
-def tag(request, tag_name):
-    questions_by_tag = Question.objects.by_tag(tag_name)
-    context['questions'] = paginate(questions_by_tag, request)
-    context['tag_name'] = tag_name
-    return render(request, 'tag.html', context)
+def question(request, id):
 
-def question(request, qid):
-    context['question'] = Question.objects.get(pk=qid)
-    form = AnswerForm(request.POST)
-
-    if request.POST:
+    if request.method == 'POST':
+        form = AnswerForm(request.user, id, data=request.POST)
+        print(id,  request.POST, 'ggg')
         if form.is_valid():
-            answer = Answer.objects.create(
-                question=context['question'],
-                text=form.cleaned_data.get('textarea'),
-                author=request.user.profile
-            )
-    
-    context['answers'] = Answer.objects.hottest(qid)
-    context['form'] = form
-    return render(request, 'question.html', context)
+            quest = form.save().question
+            url = quest
+            return redirect(url)
+    else:
+        form = AnswerForm(request.user, id)
+
+    question = get_object_or_404(Question, pk = id)
+
+    answers = Answer.answers.filter(question = question)
+    answers = search(answers, request, 'content')
+
+    answers = paginate(answers, request.GET.get('page'), 10)
+    return render(request, "question.html", {"question":question, "answers":answers, "form":form,})
+
+@login_required
+def ask(request):
+    if request.method == 'POST':
+        form = QuestionForm(request.user, data=request.POST)
+        if form.is_valid():
+            question = form.save()  #?
+            url = question.get_absolute_url()
+            return redirect(url)
+    else:
+        form = QuestionForm(request.user, data=request.POST)
+    return render(request, "ask.html", {'form':form, })
 
 def login(request):
-    # print(request.GET)
-    # print(request.POST)
-    redirected_path = request.GET.get('next', '/')
-    form = LoginForm(request.POST)
-
-    if request.POST:
+    if request.method == 'POST':
         form = LoginForm(request.POST)
-
         if form.is_valid():
             user = auth.authenticate(request, **form.cleaned_data)
             if user:
+                print(user)
                 auth.login(request, user)
-                return redirect(reverse("index"))
+
+                return redirect(reverse('index'))
             else:
-                form.add_error(None, 'Wrong login or password')
+                form.add_error(None, 'Incorrect login or password')
+    else:
+        form = LoginForm()
 
-    context['form'] = form
-    return render(request, 'login.html', context)
+    return render(request, "login.html", { "form":form })
 
-def signup(request):
-    form = RegisterForm(request.POST)
-
-    if request.POST:
-        if form.is_valid():
-            name = form.cleaned_data.get('login')
-            email = form.cleaned_data.get('email')
-            password = form.cleaned_data.get('password')
-            rep_password = form.cleaned_data.get('rep_password')
-            if password != rep_password:
-                form.add_error(None, 'Wrong repeated password')
-            elif Profile.objects.is_exist(name, email):
-                form.add_error(None, 'This login is already used')
-            else:
-                user = User.objects.create_user(name, email, password)
-                profile = Profile.objects.create(user=user)
-                auth.login(request, user)
-                return redirect('/')
-
-    context['form'] = form
-    return render(request, 'signup.html', context)
-
+@login_required()
 def logout(request):
     auth.logout(request)
-    redirected_path = request.GET.get('next', '/')
-    return redirect(redirected_path)
+    return redirect(reverse('login'))
 
-def profile(request):
-    data = {'login': request.user.username, 'email': request.user.email}
-    form = ProfileForm(data, initial=data)
-    
-    if request.POST:
-        form = ProfileForm(request.POST, initial=data)
-        if form.is_valid() and form.has_changed():
-            request.user.username=form.cleaned_data.get('login')
-            request.user.email=form.cleaned_data.get('email')
-            request.user.save()
-            return redirect('/')
+def signup(request):
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, request.FILES)
+        if user_form.is_valid():
+            new_user = user_form.save(commit=False)
+            new_user.set_password(user_form.cleaned_data['password'])
+            new_user.save()
 
-    context['form'] = form
-    return render(request, 'profile.html', context)
+            new_profile = Profile.users.create(user=new_user)
+            # new_profile.avatar = user_form.cleaned_data['avatar']
+            new_profile.save()
+            auth.login(request, new_user)
+            return redirect(reverse('index'))
+        else:
 
-@login_required(login_url='/login')
-def ask(request):
-    form = AskForm(request.POST)
+            print("bad")
 
-    if request.POST:
-        if form.is_valid():
-            tags = form.cleaned_data.get('tags')
-            if tags:
-                tags = tags.split()
-                Tag.objects.create_from_list(tags)
-                
-            question = Question.objects.create(
-                title=form.cleaned_data.get('title'),
-                text=form.cleaned_data.get('text'),
-                author=request.user.profile
-            )
-            question.add_tags(tags)
-            return redirect(reverse('question', args=[question.id]))
+    else:
+        user_form = UserForm()
+    return render(request, 'signup.html', {'user_form':user_form})
 
-    context['form'] = form
-    return render(request, 'ask.html', context)
+
+
+def tag(request, slug):
+    tag_questions = get_object_or_404(Tag.tags.filter(tag=slug)).questions.all()
+
+    questions = paginate(tag_questions, request.GET.get('page'), 20)
+    return render(request, "tag.html", {"questions":questions, "slug":slug})
+
+@login_required
+@require_http_methods(['GET','POST'])
+def settings(request):
+    if request.method == 'POST':
+        initial_data = request.POST
+        instance = request.user
+        user_form = SettingsForm(initial=initial_data, instance = instance, files = request.FILES)
+        if user_form.is_valid():
+            user_form.save()
+
+            return redirect(reverse('index'))
+    else:
+        initial_data = model_to_dict(request.user)
+        # initial_data['avatar'] = request.user.profile.avatar
+        user_form = SettingsForm(initial=initial_data)
+
+
+    return render(request, "profile.html", {"user_form":user_form, })
+
+def pageNotFound(request, exception):
+    return HttpResponseNotFound('<h1>Not found!</h1>')
+
+

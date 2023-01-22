@@ -1,35 +1,38 @@
+
+
+
 {% extends "base.html" %}
 {% load static %}
 
+
 {% block content %}
-
-<div class="container-fluid">
-    <div class="media mt-4">
-        {% include 'inc/question_card.html' %}
-    </div>
-    <hr>
-
-    {% for answer in answers.all %}
-        {% include 'inc/answer.html' %}
+    {% with 'true' as full %}
+        {% include "inc/question_card.html" %}
+    {% endwith %}
+    {% for answer in answers %}
+        {% include "inc/answer.html" %}
+    {% empty %}
+        <div class=" fs-5"> No one has answered yet:(</div>
     {% endfor %}
 
-    {% if user.is_authenticated %}
+    {% with answers as page_obj %}
+        {% include "inc/pager.html" %}
+    {% endwith %}
 
     <br>
-
-    <form method="POST">
+    <hr>
+    <form action="/question/{{ question.id }}/" method="post">
         {% csrf_token %}
-        <div class="form-group">
-            {% for field in form.visible_fields %}
+        {% for field in form %}
+            <div class="mb-3 mt-5 new_answer">
+                <label for="{{ field.id_for_label }}" class="form-label">
+                    {{ field.label }}:
+                </label>
+                <br>
                 {{ field }}
-            {% endfor %}
-            <br>
-            <button type="submit" class="btn btn-primary">Send</button>
-        </div>
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-info answ_but">Answer!</button>
     </form>
 
-    {% endif %}
-
-</div>
-
-{% endblock %}
+{% endblock content %}
