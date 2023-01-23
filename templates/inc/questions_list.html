@@ -4,4 +4,7 @@
     {% for question in questions %} 
         {% include 'inc/question_card.html' %}
     {% endfor %}
+    {% with questions as page_obj %}
+            {% include "inc/pager.html" %}
+        {% endwith %}
 {% endif %}
